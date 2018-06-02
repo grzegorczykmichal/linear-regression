@@ -1,0 +1,23 @@
+{
+  "name": "tensorflow.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "webpack": "./node_modules/.bin/webpack -w",
+    "start": "npm run webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^3.0.0"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^0.11.4"
+  }
+}

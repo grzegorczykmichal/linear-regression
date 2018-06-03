@@ -11,14 +11,7 @@ const pointMaker = ({ width, height, denormalize }) => (x, y) => {
   return dot;
 };
 
-const drawPoint = (
-  {
-    svg,
-    width,
-    height,
-    denormalize
-  }
-) => {
+const drawPoint = ({ svg, width, height, denormalize }) => {
   const createPoint = pointMaker({ denormalize, width, height });
   return (x, y) => {
     svg.appendChild(createPoint(x, y));
@@ -34,7 +27,7 @@ const drawPoints = (config) => {
   }
 };
 
-const lineMaker = ({ width, height, denormalize }) => (fn) => {
+const lineMaker = ({ width, height, denormalize }) => (fn, stroke = '#FFFF00') => {
   const x1 = -1;
   const x2 = 1;
   const y1 = fn(x1);
@@ -45,21 +38,52 @@ const lineMaker = ({ width, height, denormalize }) => (fn) => {
   line.setAttribute('y1', height / 2 - denormalize(y1));
   line.setAttribute('x2', width / 2 + denormalize(x2));
   line.setAttribute('y2', height / 2 - denormalize(y2));
-  line.setAttribute('style', 'stroke:rgb(250,250,0);stroke-width:1');
+  line.setAttribute('style', `stroke:${stroke};stroke-width:1`);
   return line;
 };
 
-const drawLine = (
-  {
-    svg,
-    width,
-    height,
-    denormalize
-  }
-) => {
+const drawLine = ({ svg, width, height, denormalize }) => {
   const createLine = lineMaker({ denormalize, width, height });
-  return (fn) => {
-    svg.appendChild(createLine(fn));
+  return (fn, stroke = '#FFFF00') => {
+    svg.appendChild(createLine(fn, stroke));
+  }
+};
+
+const pathMaker = ({ width, height, denormalize }) => (fn, stroke = '#FFFF00') => {
+  const x1 = -1;
+  const x2 = 1;
+  const step = 0.1;
+
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('style', `stroke:${stroke};stroke-width:1`);
+  path.setAttribute('fill', `none`);
+
+  const verticies = [];
+  for (let i = x1; i <= x2; i += step) {
+    const x = denormalize(i);
+    const y = denormalize(fn(i));
+    verticies.push([width / 2 + x, height / 2 - y]);
+  }
+
+  const d = verticies.reduce((d, v, i, { length }) => {
+    if (i === 0) {
+      d += `${v[0]} ${v[1]} `;
+    } else {
+      d += `L ${v[0]} ${v[1]} `;
+    }
+
+    return d;
+  }, 'M ');
+
+  path.setAttribute('d', d);
+
+  return path;
+};
+
+const drawPath = ({ svg, width, height, denormalize }) => {
+  const createPath = pathMaker({ denormalize, width, height });
+  return (fn, stroke = '#FFFF00') => {
+    svg.appendChild(createPath(fn, stroke));
   }
 };
 
@@ -91,6 +115,7 @@ const svg = (config) => {
     drawPoint: drawPoint(config),
     drawPoints: drawPoints(config),
     drawLine: drawLine(config),
+    drawPath: drawPath(config),
     getXY: getXY(config),
     clear: clear(config)
   }

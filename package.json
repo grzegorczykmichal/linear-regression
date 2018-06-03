@@ -18,6 +18,8 @@
     "webpack-cli": "^3.0.0"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^0.11.4"
+    "@tensorflow/tfjs": "^0.11.4",
+    "d3": "^3.5.17",
+    "function-plot": "^1.18.1"
   }
 }

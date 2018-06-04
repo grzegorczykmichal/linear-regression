@@ -1,2 +1,1 @@
-# linear-regression
-linear/plynomial regression in tensorflow.js
+Polynomial regression in tensorflow.js.

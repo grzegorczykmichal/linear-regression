@@ -11,13 +11,8 @@ const LEARNING_STEPS = 50;
 
 let dots = [];
 let cooeficients = [
-  [
-    tf.scalar(Math.random()).variable(),
-    tf.scalar(Math.random()).variable(),
-    tf.scalar(Math.random()).variable(),
-    tf.scalar(Math.random()).variable(),
-    tf.scalar(Math.random()).variable(),
-  ]
+  tf.scalar(Math.random()).variable(),
+  tf.scalar(Math.random()).variable(),
 ];
 
 const learningRate = 0.5;
@@ -55,7 +50,8 @@ const addPoint = (point) => {
 const renderer = (svg) => {
   const colors = ['#FF0000', '#0000FF'];
   return (fn) => {
-    // svg.clear();
+
+    svg.clear();
     svg.drawPoints(dots);
     svg.drawPath(fn.fn);
 
@@ -124,30 +120,20 @@ const optimize = (optimizer, loss, predictions, labels) => {
 
 }
 const optimize2 = (optimizer, loss, predictions, labels) => {
-
-  const a = tf.scalar(Math.random()).variable();
-  const b = tf.scalar(Math.random()).variable();
-  const c = tf.scalar(Math.random()).variable();
-  const d = tf.scalar(Math.random()).variable();
-  const e = tf.scalar(Math.random()).variable();
-
-  const ret = [];
-
   for (let i = 0; i < LEARNING_STEPS; i++) {
-
-    const aData = a.dataSync()[0];
-    const bData = b.dataSync()[0];
-    const cData = c.dataSync()[0];
-    const dData = d.dataSync()[0];
-    const eData = e.dataSync()[0];
-
-    optimizer.minimize(() => loss(predictions(a, b, c, d, e), labels));
-
-    ret.push(aData, bData, cData, dData, eData)
+    optimizer.minimize(() => loss(predictions(...cooeficients), labels));
   }
 
-  return ret;
-
+  return Promise.all(cooeficients.map(c => c.data())).then(
+    coefs => ({
+      fn: x => {
+        return poly(...coefs)(x);
+      },
+      toString: () => {
+        return polyString(...coefs);
+      },
+    })
+  );
 }
 
 const train = (data) => {
@@ -155,7 +141,9 @@ const train = (data) => {
   const labels = tf.tensor1d(data.map(({ x, y }) => y));
   const predictions = predict(trainingData);
 
-  return optimize(optimizer, loss, predictions, labels);
+  return optimize2(optimizer, loss, predictions, labels);
+
+  // return optimize(optimizer, loss, predictions, labels);
 }
 
 const train2 = (data) => {
@@ -166,19 +154,37 @@ const train2 = (data) => {
   return optimize2(optimizer, loss, predictions, labels);
 }
 
-const render = renderer(s);
+const input = document.querySelector('.degrees__value');
+
+const render = renderer(s, input);
 
 const run = () => {
   tf.tidy(() => {
     const result = train(dots);
-    render(result);
+    result.then(data => render(data));
   });
 }
+
+document.querySelector('.degrees__increment').addEventListener('click', e => {
+  cooeficients.push(tf.scalar(Math.random()).variable());
+  input.innerHTML = cooeficients.length;
+  run();
+});
+
+document.querySelector('.degrees__decrement').addEventListener('click', e => {
+  if (cooeficients.length > 1) {
+    cooeficients.splice(-1, 1);
+    input.innerHTML = cooeficients.length;
+    run();
+  }
+})
 
 svgElement.addEventListener('click', e => {
   addPoint(s.getXY(e.x, e.y));
   run();
 })
+
+input.innerHTML = cooeficients.length;
 
 class App extends React.Component {
 

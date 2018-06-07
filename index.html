@@ -24,6 +24,49 @@
       height: 600px;
     }
 
+    .controls {
+      position: fixed;
+      height: 5rem;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 2rem;
+      background: #32323211
+    }
+
+    .degrees {
+      background: #FFF;
+      border: 1px solid #DDD;
+      border-radius: 0.25rem;
+      display: flex;
+    }
+
+    .degrees button {
+      background: transparent;
+      border: none;
+      width: 2rem;
+      cursor: pointer;
+    }
+
+    .degrees button:hover {
+      background: #EFEFEF
+    }
+
+    .degrees__decrement {
+      border-radius: 0.25rem 0 0 0.25rem
+    }
+
+    .degrees__increment {
+      border-radius: 0 0.25rem 0.25rem 0
+    }
+
+    .degrees__value {
+      font-family: sans-serif;
+      padding: .25rem;
+      font-size: 0.875rem
+    }
+
     #svg {
       background: #323232;
     }
@@ -36,6 +79,14 @@
     <svg id="svg" width="600" height="600">
     </svg>
     <div id="quadratic"></div>
+  </div>
+  <div class="controls">
+    <div class="degrees">
+      <button class="degrees__decrement">-</button>
+      <span class="degrees__value"></span>
+      <button class="degrees__increment">+</button>
+    </div>
+
   </div>
   <script src="./dist/app.js"></script>
 </body>

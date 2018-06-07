@@ -14,12 +14,15 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "webpack": "^4.10.2",
     "webpack-cli": "^3.0.0"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^0.11.4",
     "d3": "^3.5.17",
-    "function-plot": "^1.18.1"
+    "function-plot": "^1.18.1",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
   }
 }

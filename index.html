@@ -8,6 +8,10 @@
   <title>&origof; Linear Regression &imof;</title>
 
   <style>
+    body {
+      margin: 0
+    }
+
     #app {
       display: flex;
       align-items: center;
@@ -16,8 +20,8 @@
     }
 
     #quadratic {
-      width: 400px;
-      height: 400px;
+      width: 600px;
+      height: 600px;
     }
 
     #svg {
@@ -27,9 +31,9 @@
 </head>
 
 <body>
-
+  <div id="root"></div>
   <div id="app">
-    <svg id="svg" width="400" height="400">
+    <svg id="svg" width="600" height="600">
     </svg>
     <div id="quadratic"></div>
   </div>

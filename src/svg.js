@@ -49,17 +49,28 @@ const drawLine = ({ svg, width, height, denormalize }) => {
   }
 };
 
-const pathMaker = ({ width, height, denormalize }) => (fn, stroke = '#FFFF00') => {
+const PATH_DEFAULTS = {
+  stroke: '#FFFF00',
+  'stroke-width': 1,
+  fill: 'none',
+  opacity: 0.2,
+}
+
+const pathMaker = ({ width, height, denormalize }) => (fn, options = {}) => {
   const x1 = -1;
   const x2 = 1;
-  const step = 0.1;
+  const step = 0.05;
+
+  options = Object.assign(PATH_DEFAULTS, options);
 
   const path = document.createElementNS(NS, 'path');
-  path.setAttribute('style', `stroke:${stroke};stroke-width:1`);
-  path.setAttribute('fill', `none`);
+
+  for (const [key, value] of Object.entries(options)) {
+    path.setAttribute(key, value);
+  }
 
   const verticies = [];
-  for (let i = x1; i <= x2; i += step) {
+  for (let i = x1; i <= x2 + step; i += step) {
     const x = denormalize(i);
     const y = denormalize(fn(i));
     verticies.push([width / 2 + x, height / 2 - y]);
@@ -82,8 +93,8 @@ const pathMaker = ({ width, height, denormalize }) => (fn, stroke = '#FFFF00') =
 
 const drawPath = ({ svg, width, height, denormalize }) => {
   const createPath = pathMaker({ denormalize, width, height });
-  return (fn, stroke = '#FFFF00') => {
-    svg.appendChild(createPath(fn, stroke));
+  return (fn, options = {}) => {
+    svg.appendChild(createPath(fn, options));
   }
 };
 
